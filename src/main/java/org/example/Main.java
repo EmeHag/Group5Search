@@ -1,34 +1,26 @@
 package org.example;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import java.io.FileReader;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.time.Duration;
 
 public class Main {
 
-    public static void main(String[] args) throws InterruptedException {
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
-        JSONParser parser = new JSONParser();
-        String username = "";
-        String password = "";
-        try {
-            // Read the JSON file
-            Object obj = parser.parse(new FileReader("Facebook.json"));
-            JSONObject jsonObject = (JSONObject) obj;
+    public static void main(String[] args) {
 
-            // Extract the username and password values
-            username = (String) jsonObject.get("username");
-            password = (String) jsonObject.get("password");
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        var credentials = readCredentialsFromFile();
 
         // Create ChromeOptions instance and add the --disable-notifications argument
         ChromeOptions options = new ChromeOptions();
@@ -36,7 +28,7 @@ public class Main {
         options.addArguments("--start-maximized");
 
         // Set the path to the ChromeDriver executable
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\emeli\\chromedriver_win32\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\maria\\.cache\\selenium\\chromedriver\\win32\\112.0.5615.49\\chromedriver.exe");
 
         // Launch the Chrome browser
         WebDriver driver = new ChromeDriver(options);
@@ -48,18 +40,16 @@ public class Main {
         WebElement button = driver.findElement(By.xpath("//button[text()='Tillåt endast nödvändiga cookies']"));
         button.click();
 
-        // Enter the email address and password
         WebElement emailInput = driver.findElement(By.id("email"));
-        emailInput.sendKeys(username);
+        emailInput.sendKeys(credentials.email());
 
         WebElement passwordInput = driver.findElement(By.id("pass"));
-        passwordInput.sendKeys(password);
+        passwordInput.sendKeys(credentials.password());
 
-        // Click the login button
         WebElement loginButton = driver.findElement(By.name("login"));
         loginButton.click();
 
-        Thread.sleep(4000);
+        sleepForSeconds(3);
 
         // Click on the search bar, write "Java" and click enter to search
         var sok = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div[2]/div[3]/div/div/div/div/div/label"));
@@ -67,9 +57,27 @@ public class Main {
         sok.sendKeys("Java");
         sok.sendKeys(Keys.ENTER);
 
-        Thread.sleep(4000);
+        sleepForSeconds(4);
 
         // Close the browser
         driver.quit();
+    }
+
+    private static void sleepForSeconds(int s) {
+        try {
+            Thread.sleep(Duration.ofSeconds(s));
+        } catch (InterruptedException e) {
+            logger.error("Kunde inte pausa", e);
+        }
+    }
+
+    private static Credentials readCredentialsFromFile() {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readValue(new File("src/main/resources/Facebook.json"), Credentials.class);
+        } catch (IOException e) {
+            logger.error("Kunde inte öppna filen", e);
+            throw new RuntimeException(e);
+        }
     }
 }
