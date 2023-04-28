@@ -43,7 +43,7 @@ public class Main {
     private static Credentials readCredentialsFromFile() {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.readValue(new File("src/main/resources/Facebook.json"), Credentials.class);
+            return mapper.readValue(new File("c:\\temp\\facebook.json"), Credentials.class);
         } catch (IOException e) {
             logger.error("Kunde inte öppna filen", e);
             throw new RuntimeException(e);
