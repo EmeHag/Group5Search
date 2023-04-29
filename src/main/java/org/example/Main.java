@@ -37,11 +37,13 @@ public class Main {
         sleepForSeconds(4);
 
         // Close the browser
+        logger.info("Closing browser");
         driver.quit();
     }
 
     //Reading the facebook credentails from the json file
     private static JsonNode readCredentialsFromFile() throws IOException {
+        logger.info("Import json file");
         File jsonFile = new File("C:\\temp\\facebook.json");
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readTree(jsonFile);
@@ -49,6 +51,7 @@ public class Main {
 
     //Open the choosen page in Chrome Webdriver
     private static WebDriver openPageInChrome(String url) {
+        logger.info("Opening chrome");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--disable-notifications");
         options.addArguments("--start-maximized");
@@ -65,6 +68,7 @@ public class Main {
 
     //Logging in using the facebook credentials from the json file
     private static void logIn(JsonNode jsonNode, WebDriver driver) {
+        logger.info("Login");
         WebElement emailInput = driver.findElement(By.id("email"));
         emailInput.sendKeys(jsonNode.get("facebookCredentials").get("email").asText());
 
