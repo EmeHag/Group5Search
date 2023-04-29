@@ -1,5 +1,6 @@
 package org.example;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -18,7 +19,7 @@ public class Main {
 
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         var credentials = readCredentialsFromFile();
 
@@ -40,14 +41,10 @@ public class Main {
     }
 
     //Reading the facebook credentails from the json file
-    private static Credentials readCredentialsFromFile() {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.readValue(new File("c:\\temp\\facebook.json"), Credentials.class);
-        } catch (IOException e) {
-            logger.error("Kunde inte öppna filen", e);
-            throw new RuntimeException(e);
-        }
+    private static JsonNode readCredentialsFromFile() throws IOException {
+        File jsonFile = new File("C:\\temp\\facebook.json");
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readTree(jsonFile);
     }
 
     //Open the choosen page in Chrome Webdriver
@@ -57,7 +54,7 @@ public class Main {
         options.addArguments("--start-maximized");
 
         //in second argument, insert path to executable chromedriver file
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\maria\\.cache\\selenium\\chromedriver\\win32\\112.0.5615.49\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "src/main/java/chromedriver.exe");
         WebDriver driver = new ChromeDriver(options);
         driver.get(url);
         WebElement button = driver.findElement(By.xpath("//button[text()='Tillåt endast nödvändiga cookies']"));
@@ -67,12 +64,12 @@ public class Main {
 
 
     //Logging in using the facebook credentials from the json file
-    private static void logIn(Credentials credentials, WebDriver driver) {
+    private static void logIn(JsonNode jsonNode, WebDriver driver) {
         WebElement emailInput = driver.findElement(By.id("email"));
-        emailInput.sendKeys(credentials.email());
+        emailInput.sendKeys(jsonNode.get("facebookCredentials").get("email").asText());
 
         WebElement passwordInput = driver.findElement(By.id("pass"));
-        passwordInput.sendKeys(credentials.password());
+        passwordInput.sendKeys(jsonNode.get("facebookCredentials").get("password").asText());
 
         WebElement loginButton = driver.findElement(By.name("login"));
         loginButton.click();
