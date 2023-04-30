@@ -28,6 +28,7 @@ public class Main {
         //Calls the logIn method that is used to log in to Facebook
         logIn(credentials, driver);
 
+
         sleepForSeconds(3);
 
         //Calling the search method
@@ -36,15 +37,19 @@ public class Main {
         //Calling the sleep method
         sleepForSeconds(4);
 
+        varifyUrl(driver);
+
+
         // Close the browser
         logger.info("Closing browser");
         driver.quit();
     }
 
+
     //Reading the facebook credentails from the json file
     private static JsonNode readCredentialsFromFile() throws IOException {
         logger.info("Import json file");
-        File jsonFile = new File("C:\\temp\\facebook.json");
+        File jsonFile = new File("C:\\temp\\Facebook.json");
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readTree(jsonFile);
     }
@@ -65,7 +70,6 @@ public class Main {
         return driver;
     }
 
-
     //Logging in using the facebook credentials from the json file
     private static void logIn(JsonNode jsonNode, WebDriver driver) {
         logger.info("Login");
@@ -79,16 +83,29 @@ public class Main {
         loginButton.click();
     }
 
+
     //Searching based on the input argument
     private static void search(String searchPhrase, WebDriver driver) {
+        var search = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div[2]/div[3]/div/div/div/div/div/label"));
+
         try {
-            var search = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div[2]/div[3]/div/div/div/div/div/label"));
             search.click();
             search.sendKeys(searchPhrase);
             search.sendKeys(Keys.ENTER);
+
         } catch (Exception e) {
             logger.error("Sökning kunde inte genomföras korrekt ", e);
             e.printStackTrace();
+        }
+        sleepForSeconds(3);
+    }
+
+    private static boolean varifyUrl(WebDriver driver) {
+        var currentUrl = driver.getCurrentUrl();
+        if (currentUrl.equalsIgnoreCase("facebook.com/search/top/?q=Java"))
+            return true;
+        else {
+            return false;
         }
     }
 
