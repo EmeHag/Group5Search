@@ -39,7 +39,6 @@ public class Main {
 
         varifyUrl(driver);
 
-
         // Close the browser
         logger.info("Closing browser");
         driver.quit();
@@ -65,8 +64,20 @@ public class Main {
         System.setProperty("webdriver.chrome.driver", "src/main/java/chromedriver.exe");
         WebDriver driver = new ChromeDriver(options);
         driver.get(url);
-        WebElement button = driver.findElement(By.xpath("//button[text()='Tillåt endast nödvändiga cookies']"));
-        button.click();
+        // Accept only necessary cookies
+        logger.info("Handling cookies window, allow only necessary cookies");
+        try {
+            WebElement button = driver.findElement(By.xpath("//button[text()='Neka valfria cookies']"));
+            button.click();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            try {
+                WebElement button = driver.findElement(By.xpath("//button[text()='Tillåt endast nödvändiga cookies']"));
+                button.click();
+            } catch (Exception error) {
+                logger.error(e.getMessage());
+            }
+        }
         return driver;
     }
 
@@ -100,12 +111,13 @@ public class Main {
         sleepForSeconds(3);
     }
 
-    private static boolean varifyUrl(WebDriver driver) {
+    //Comparing current URL with expected URL
+    private static void varifyUrl(WebDriver driver) {
         var currentUrl = driver.getCurrentUrl();
         if (currentUrl.equalsIgnoreCase("facebook.com/search/top/?q=Java"))
-            return true;
+            System.out.println("Test passed");
         else {
-            return false;
+            System.out.println("Test failed");
         }
     }
 

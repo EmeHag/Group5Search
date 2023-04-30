@@ -79,6 +79,7 @@
         <item itemvalue="Application.Main" />
         <item itemvalue="Application.Main" />
         <item itemvalue="Application.Main" />
+        <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
   </component>
@@ -114,6 +115,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Meeeh" />
-    <option name="LAST_COMMIT_MESSAGE" value="Meeeh" />
+    <MESSAGE value="Ändrat pathname för json filen. Borde funka." />
+    <option name="LAST_COMMIT_MESSAGE" value="Ändrat pathname för json filen. Borde funka." />
   </component>
 </project>
