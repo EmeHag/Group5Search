@@ -114,7 +114,7 @@ public class Main {
     //Comparing current URL with expected URL
     private static void varifyUrl(WebDriver driver) {
         var currentUrl = driver.getCurrentUrl();
-        if (currentUrl.equalsIgnoreCase("facebook.com/search/top/?q=Java"))
+        if (currentUrl.equalsIgnoreCase("https://www.facebook.com/search/top/?q=Java"))
             System.out.println("Test passed");
         else {
             System.out.println("Test failed");
