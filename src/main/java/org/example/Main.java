@@ -28,16 +28,15 @@ public class Main {
         //Calls the logIn method that is used to log in to Facebook
         logIn(credentials, driver);
 
-
         sleepForSeconds(3);
 
         //Calling the search method
         search("Java", driver);
 
         //Calling the sleep method
-        sleepForSeconds(4);
+        sleepForSeconds(3);
 
-        varifyUrl(driver);
+        verifyUrl(driver);
 
         // Close the browser
         logger.info("Closing browser");
@@ -97,7 +96,7 @@ public class Main {
 
     //Searching based on the input argument
     private static void search(String searchPhrase, WebDriver driver) {
-        var search = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div[2]/div[3]/div/div/div/div/div/label"));
+        var search = driver.findElement(By.xpath("/html/body/div[1]/div/div[1]/div/div[2]/div[3]/div/div/div/div/div/label/input"));
 
         try {
             search.click();
@@ -112,9 +111,12 @@ public class Main {
     }
 
     //Comparing current URL with expected URL
-    private static void varifyUrl(WebDriver driver) {
+    private static void verifyUrl(WebDriver driver) {
+        logger.info("Verify");
+        // /html/body/div[1]/div/div[1]/div/div[2]/div[3]/div/div/div/div/div/label/input
+        // /html/body/div[1]/div/div[1]/div/div[2]/div[3]/div/div/div/div/div/label
         var currentUrl = driver.getCurrentUrl();
-        if (currentUrl.equalsIgnoreCase("facebook.com/search/top/?q=Java"))
+        if (currentUrl.equalsIgnoreCase("https://www.facebook.com/search/top/?q=Java"))
             System.out.println("Test passed");
         else {
             System.out.println("Test failed");
